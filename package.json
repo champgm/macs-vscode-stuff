@@ -4,12 +4,13 @@
 	"description": "Mac's VSCode stuff",
 	"version": "0.0.1",
 	"engines": {
-		"vscode": "^1.33.0"
+		"vscode": "^1.32.0"
 	},
 	"categories": [
 		"Other"
 	],
 	"activationEvents": [
+    "onLanguage:typescript",
 		"onCommand:extension.helloWorld"
 	],
 	"main": "./out/extension.js",
@@ -22,6 +23,9 @@
 		]
 	},
 	"scripts": {
+    "unpublish": "rm -rf ~/.vscode/extensions/champgm.macs-vscode-stuff || true",
+    "copy":"mkdir -p ~/.vscode/extensions/champgm.macs-vscode-stuff && rsync -avzh --exclude '.git' . ~/.vscode/extensions/champgm.macs-vscode-stuff",
+    "publish": "npm run unpublish && npm run compile && npm run copy",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
