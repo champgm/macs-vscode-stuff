@@ -1,4 +1,15 @@
-import vscode, { CodeAction, Selection, Range, Uri, WorkspaceEdit, CodeActionKind, Diagnostic } from 'vscode';
+import vscode, { CodeAction, Selection, Range, Uri, WorkspaceEdit, CodeActionKind, Diagnostic, workspace } from 'vscode';
+
+const autoFixImports = [
+  'path',
+  'fs',
+  'vscode',
+];
+
+interface PackageAction {
+  codeAction: CodeAction,
+  packageName: string,
+}
 
 export class Imports implements vscode.CodeActionProvider {
 
@@ -13,7 +24,7 @@ export class Imports implements vscode.CodeActionProvider {
   }
 
   private doSomething(uri: Uri, diagnostics: Diagnostic[]): CodeAction[] {
-    return diagnostics
+    const codeActions = diagnostics
       .filter((diagnostic) => {
         return diagnostic.message.startsWith('Cannot find name');
       })
@@ -25,14 +36,29 @@ export class Imports implements vscode.CodeActionProvider {
         const workspaceEdit = new WorkspaceEdit();
         workspaceEdit.insert(uri, theTop, `${importStatement};\n`);
 
-        const codeAction: CodeAction = {
-          title: importStatement,
-          edit: workspaceEdit,
-          diagnostics: [diagnostic],
-          kind: CodeActionKind.QuickFix,
-          isPreferred: false,
+        const packageAction: PackageAction = {
+          packageName,
+          codeAction: {
+            title: importStatement,
+            edit: workspaceEdit,
+            diagnostics: [diagnostic],
+            kind: CodeActionKind.QuickFix,
+            isPreferred: false,
+          }
+        };
+        return packageAction;
+      })
+      .filter((packageAction) => {
+        if (autoFixImports.includes(packageAction.packageName)) {
+          vscode.workspace.applyEdit(packageAction.codeAction.edit as WorkspaceEdit);
+          return false;
         }
-        return codeAction;
+        return true;
+      })
+      .map((packageAction) => {
+        return packageAction.codeAction;
       });
+
+    return codeActions;
   }
 }

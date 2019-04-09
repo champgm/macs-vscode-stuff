@@ -1,8 +1,15 @@
+import uuid from 'uuid';
 import vscode, { CodeAction, Selection, Range, Uri, WorkspaceEdit, CodeActionKind, Diagnostic, TextDocument } from 'vscode';
 import { cpus } from 'os';
 
 const followingPropertiesText = 'is missing the following properties from type';
 const missingInTypeText = 'is missing in type';
+
+const fieldGetters = {
+  fulfillmentId: () => `'${uuid.v4()}'`,
+  childFulfillments: () => `[]`,
+  fulfillmentType: () => `Restamo.FulfillmentType.Integration`,
+};
 
 export class Fields implements vscode.CodeActionProvider {
 
@@ -29,13 +36,13 @@ export class Fields implements vscode.CodeActionProvider {
         const nextLine = document.lineAt(nextLineNumber);
         const indentation = getIndentation(nextLine.text);
 
-        const linesToAdd = missingFields.map((fieldName) => {
-          return padText(`${fieldName}: '${fieldName}',`, indentation);
-        }).join('\n');
+        const linesToAdd = getLinesToAdd(missingFields, indentation);
 
         const underneathDeclaration = new vscode.Position(nextLineNumber, 0);
         const workspaceEdit = new WorkspaceEdit();
         workspaceEdit.insert(uri, underneathDeclaration, `${linesToAdd}\n`);
+
+        vscode.workspace.applyEdit(workspaceEdit);
 
         const codeAction: CodeAction = {
           title: 'Add missing fields',
@@ -82,4 +89,13 @@ function getMissingFields(diagnostic: Diagnostic): string[] {
   }
 
   return [];
+}
+
+function getLinesToAdd(missingFields: string[], indentation: number): string {
+  return missingFields.map((fieldName) => {
+    const fieldValue = fieldGetters[fieldName]
+      ? fieldGetters[fieldName]()
+      : `'${fieldName}'`
+    return padText(`${fieldName}: ${fieldValue},`, indentation);
+  }).join('\n');
 }

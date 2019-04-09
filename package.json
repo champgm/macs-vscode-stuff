@@ -10,7 +10,7 @@
 		"Other"
 	],
 	"activationEvents": [
-    "onLanguage:typescript",
+		"onLanguage:typescript",
 		"onCommand:extension.helloWorld"
 	],
 	"main": "./out/extension.js",
@@ -23,9 +23,9 @@
 		]
 	},
 	"scripts": {
-    "unpublish": "rm -rf ~/.vscode/extensions/champgm.macs-vscode-stuff || true",
-    "copy":"mkdir -p ~/.vscode/extensions/champgm.macs-vscode-stuff && rsync -avzh --exclude '.git' . ~/.vscode/extensions/champgm.macs-vscode-stuff --delete",
-    "publish": "npm run unpublish && npm run compile && npm run copy",
+		"unpublish": "rm -rf ~/.vscode/extensions/champgm.macs-vscode-stuff || true",
+		"copy": "mkdir -p ~/.vscode/extensions/champgm.macs-vscode-stuff && rsync -avzh --exclude '.git' . ~/.vscode/extensions/champgm.macs-vscode-stuff --delete",
+		"publish": "npm run unpublish && npm run compile && npm run copy",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
@@ -33,10 +33,14 @@
 		"test": "npm run compile && node ./node_modules/vscode/bin/test"
 	},
 	"devDependencies": {
-		"typescript": "^3.3.1",
-		"vscode": "^1.1.28",
-		"tslint": "^5.12.1",
+		"@types/mocha": "^2.2.42",
 		"@types/node": "^10.12.21",
-		"@types/mocha": "^2.2.42"
+		"@types/uuid": "^3.4.4",
+		"tslint": "^5.12.1",
+		"typescript": "^3.3.1",
+		"vscode": "^1.1.28"
+	},
+	"dependencies": {
+		"uuid": "^3.3.2"
 	}
 }
