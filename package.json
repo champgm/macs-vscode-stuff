@@ -24,7 +24,7 @@
 	},
 	"scripts": {
     "unpublish": "rm -rf ~/.vscode/extensions/champgm.macs-vscode-stuff || true",
-    "copy":"mkdir -p ~/.vscode/extensions/champgm.macs-vscode-stuff && rsync -avzh --exclude '.git' . ~/.vscode/extensions/champgm.macs-vscode-stuff",
+    "copy":"mkdir -p ~/.vscode/extensions/champgm.macs-vscode-stuff && rsync -avzh --exclude '.git' . ~/.vscode/extensions/champgm.macs-vscode-stuff --delete",
     "publish": "npm run unpublish && npm run compile && npm run copy",
 		"vscode:prepublish": "npm run compile",
 		"compile": "tsc -p ./",

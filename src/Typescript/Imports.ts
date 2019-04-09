@@ -1,7 +1,6 @@
 import vscode, { CodeAction, Selection, Range, Uri, WorkspaceEdit, CodeActionKind, Diagnostic } from 'vscode';
 
 export class Imports implements vscode.CodeActionProvider {
-  private allowEventTriggers: boolean = true;
 
   public provideCodeActions(
     document: vscode.TextDocument,
@@ -10,7 +9,6 @@ export class Imports implements vscode.CodeActionProvider {
     token: vscode.CancellationToken
   ): vscode.ProviderResult<(vscode.Command | vscode.CodeAction)[]> {
     const codeActions = this.doSomething(document.uri, context.diagnostics);
-    console.log(`${JSON.stringify(codeActions, null, 2)}`);
     return codeActions;
   }
 
